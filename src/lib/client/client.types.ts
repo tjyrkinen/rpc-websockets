@@ -1,5 +1,5 @@
 import NodeWebSocket from "ws"
-import * as http from "http";
+import * as http from "http"
 
 export type BrowserWebSocketType = InstanceType<typeof WebSocket>;
 export type NodeWebSocketType = InstanceType<typeof NodeWebSocket>;

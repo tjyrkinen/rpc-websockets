@@ -202,7 +202,7 @@ export default class CommonClient extends EventEmitter
      */
     notify(method: string, params?: IWSRequestParams)
     {
-        return new Promise((resolve, reject) =>
+        return new Promise<void>((resolve, reject) =>
         {
             if (!this.ready)
                 return reject(new Error("socket not ready"))
@@ -290,9 +290,10 @@ export default class CommonClient extends EventEmitter
     {
         this.socket = this.webSocketFactory(address, options)
 
-        this.socket.addEventListener("upgrade", (res) => {
-            this.emit("upgrade", res);
-        });
+        this.socket.addEventListener("upgrade", (res) =>
+        {
+            this.emit("upgrade", res)
+        })
 
         this.socket.addEventListener("open", () =>
         {

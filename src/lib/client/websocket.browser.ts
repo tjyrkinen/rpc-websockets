@@ -6,7 +6,8 @@
 "use strict"
 
 import { EventEmitter } from "eventemitter3"
-import { BrowserWebSocketType, NodeWebSocketType, IWSClientAdditionalOptions } from "./client.types"
+import { BrowserWebSocketType, NodeWebSocketType, IWSClientAdditionalOptions, WebSocketEvents }
+    from "./client.types"
 
 class WebSocketBrowserImpl extends EventEmitter
 {
@@ -71,13 +72,20 @@ class WebSocketBrowserImpl extends EventEmitter
         this.socket.close(code, reason)
     }
 
-    addEventListener<K extends keyof WebSocketEventMap>(
+    addEventListener<K extends keyof WebSocketEvents>(
         type: K,
-        listener: (ev: WebSocketEventMap[K]) => any,
+        listener: (ev: WebSocketEvents[K]) => any,
         options?: boolean | AddEventListenerOptions
     ): void
     {
-        this.socket.addEventListener(type, listener, options)
+        if (type === "upgrade")
+        {
+            return // Not supported in web client
+        }
+        else
+        {
+            this.socket.addEventListener(type as Exclude<K, "upgrade">, listener as any, options)
+        }
     }
 }
 
