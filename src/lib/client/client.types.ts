@@ -1,4 +1,5 @@
 import NodeWebSocket from "ws"
+import * as http from "http";
 
 export type BrowserWebSocketType = InstanceType<typeof WebSocket>;
 export type NodeWebSocketType = InstanceType<typeof NodeWebSocket>;
@@ -15,6 +16,10 @@ export interface ICommonWebSocketFactory {
     (address: string, options: IWSClientAdditionalOptions): ICommonWebSocket;
 }
 
+export interface WebSocketEvents extends WebSocketEventMap {
+    "upgrade": http.IncomingMessage;
+}
+
 export interface ICommonWebSocket {
     send: (
         data: Parameters<BrowserWebSocketType["send"]>[0],
@@ -22,9 +27,9 @@ export interface ICommonWebSocket {
         callback?: (error?: Error) => void
     ) => void;
     close: (code?: number, reason?: string) => void;
-    addEventListener<K extends keyof WebSocketEventMap>(
+    addEventListener<K extends keyof WebSocketEvents>(
         type: K,
-        listener: (ev: WebSocketEventMap[K]) => any,
+        listener: (ev: WebSocketEvents[K]) => any,
         options?: boolean | AddEventListenerOptions
     ): void;
 }

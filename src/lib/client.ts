@@ -290,6 +290,10 @@ export default class CommonClient extends EventEmitter
     {
         this.socket = this.webSocketFactory(address, options)
 
+        this.socket.addEventListener("upgrade", (res) => {
+            this.emit("upgrade", res);
+        });
+
         this.socket.addEventListener("open", () =>
         {
             this.ready = true
