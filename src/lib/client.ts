@@ -62,16 +62,20 @@ export default class CommonClient extends EventEmitter
     constructor(
         webSocketFactory: ICommonWebSocketFactory,
         address = "ws://localhost:8080",
-        {
-            autoconnect = true,
-            reconnect = true,
-            reconnect_interval = 1000,
-            max_reconnects = 5
-        } = {},
+        options: IWSClientAdditionalOptions & NodeWebSocket.ClientOptions = { },
         generate_request_id?: (method: string, params: object | Array<any>) => number
     )
     {
         super()
+
+        const {
+            autoconnect = true,
+            reconnect = true,
+            reconnect_interval = 1000,
+            max_reconnects = 5
+        } = options;
+
+        this.options = options;
 
         this.webSocketFactory = webSocketFactory
 
@@ -288,6 +292,11 @@ export default class CommonClient extends EventEmitter
         options: IWSClientAdditionalOptions & NodeWebSocket.ClientOptions
     )
     {
+        options = {
+            ...this.options,
+            ...options,
+        }
+
         this.socket = this.webSocketFactory(address, options)
 
         this.socket.addEventListener("upgrade", (res) =>
